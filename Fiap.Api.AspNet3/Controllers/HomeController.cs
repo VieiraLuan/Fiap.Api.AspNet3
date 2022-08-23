@@ -14,7 +14,7 @@ namespace Fiap.Api.AspNet3.Controllers
         {
             var client = new CursoClient();
 
-            var cursos =  client.Get().Result;
+            var cursos =  client.GetAll().Result;
 
             return "Olá - GET";
         }

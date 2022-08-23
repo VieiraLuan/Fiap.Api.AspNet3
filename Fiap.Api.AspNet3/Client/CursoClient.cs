@@ -1,5 +1,6 @@
 ﻿using Fiap.Api.AspNet3.Models;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Text;
 
 namespace Fiap.Api.AspNet3.Client
@@ -12,10 +13,12 @@ namespace Fiap.Api.AspNet3.Client
 
         public CursoClient()
         {
-            httpClient =new HttpClient();   
+            httpClient = new HttpClient();   
         }
 
-        public async Task<IList<CursoModel>> Get()
+       
+
+        public async Task<IList<CursoModel>> GetAll()
         {
             var resposta = await httpClient.GetAsync(endpoint);
 
