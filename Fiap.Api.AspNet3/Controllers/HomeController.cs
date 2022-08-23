@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Fiap.Api.AspNet3.Client;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fiap.Api.AspNet3.Controllers
@@ -11,6 +12,10 @@ namespace Fiap.Api.AspNet3.Controllers
         [HttpGet]
         public string Get()
         {
+            var client = new CursoClient();
+
+            var cursos =  client.Get().Result;
+
             return "Olá - GET";
         }
 
