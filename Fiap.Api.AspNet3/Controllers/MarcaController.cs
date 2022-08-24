@@ -1,4 +1,5 @@
 ﻿using Fiap.Api.AspNet3.Models;
+using Fiap.Api.AspNet3.Repository.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -13,26 +14,55 @@ namespace Fiap.Api.AspNet3.Controllers
     {
 
         private readonly DataContext _dataContext;
+        private readonly IMarcaRepository _marcaRepository;
 
-        public MarcaController(DataContext dataContext)
+        public MarcaController([FromServices] DataContext dataContext, [FromServices] IMarcaRepository marcaRepository)
         {
             _dataContext = dataContext;
+            _marcaRepository = marcaRepository;
         }
 
+        /* [HttpGet]
+         public async Task<ActionResult<IList<MarcaModel>>> Get()
+         {
+             var listaMarcas = await _dataContext.Marcas.ToListAsync<MarcaModel>();
+
+             if (listaMarcas == null || listaMarcas.Count == 0)
+             {
+                 return Ok(listaMarcas); // Deu tudo certo !
+             }
+             else
+             {
+                 return NoContent(); // Vazio, mas deu sucesso!
+             }
+
+         }*/
+
         [HttpGet]
-        public async Task<ActionResult<IList<MarcaModel>>> Get()
+        public async Task<ActionResult<IList<dynamic>>> Get(
+            [FromQuery] int pagina = 0,
+            [FromQuery] int tamanho = 3
+        ) // Find All
         {
-            var listaMarcas = await _dataContext.Marcas.ToListAsync<MarcaModel>();
-
-            if (listaMarcas == null || listaMarcas.Count == 0)
+            var totalGeral = _marcaRepository.Count();
+            var totalPagina = (int)Math.Ceiling((double)totalGeral / tamanho);
+            var anterior = pagina > 0 ? $"marca?pagina={pagina - 1}&tamanho={tamanho}" : "";
+            var proxima = pagina < totalPagina - 1 ? $"marca?pagina={pagina + 1}&tamanho={tamanho}" : "";
+            if (pagina > totalPagina)
             {
-                return Ok(listaMarcas); // Deu tudo certo !
+                return NotFound();
             }
-            else
-            {
-                return NoContent(); // Vazio, mas deu sucesso!
-            }
-
+            var marcas = _marcaRepository.FindAll(pagina, tamanho);
+            return Ok(
+                new
+                {
+                    total = totalGeral,
+                    totalPaginas = totalPagina,
+                    anterior = anterior,
+                    proxima = proxima,
+                    marcas = marcas
+                }
+            );
         }
 
 
@@ -41,15 +71,18 @@ namespace Fiap.Api.AspNet3.Controllers
         {
             if (id == 0)
             {
-                return BadRequest(new { messagem = $"Não foi possivel encontrar a marca de id:{id}," +
-                    $" por favor forneça um id maior que 0" }); //Requisição errada !
+                return BadRequest(new
+                {
+                    messagem = $"Não foi possivel encontrar a marca de id:{id}," +
+                    $" por favor forneça um id maior que 0"
+                }); //Requisição errada !
             }
 
             var marca = await _dataContext.Marcas.FindAsync(id);
 
             if (marca == null)
             {
-                return NotFound(new {messagem = $"Não foi possivel encontrar nenhuma marca com o id:{id}"}); // Vazio, mas deu sucesso !
+                return NotFound(new { messagem = $"Não foi possivel encontrar nenhuma marca com o id:{id}" }); // Vazio, mas deu sucesso !
             }
             else
             {
@@ -63,7 +96,7 @@ namespace Fiap.Api.AspNet3.Controllers
         [Authorize(Roles = "Pleno,Senior")]
         public async Task<ActionResult<MarcaModel>> Post([FromBody] MarcaModel marcaModel)
         {
-            if ( marcaModel == null || !ModelState.IsValid)
+            if (marcaModel == null || !ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }

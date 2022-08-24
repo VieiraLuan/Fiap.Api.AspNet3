@@ -8,11 +8,12 @@ namespace Fiap.Api.AspNet3.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Senior")]
+    [Authorize(Roles = "Senior")]
     public class UsuarioController : ControllerBase
     {
         [HttpPost]
         [Route("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Login([FromBody] UsuarioModel usuarioModel)
         {
             if (usuarioModel.Senha.Equals("123456"))

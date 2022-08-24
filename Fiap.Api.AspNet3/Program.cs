@@ -2,6 +2,9 @@
 
 
 using Fiap.Api.AspNet3;
+using Fiap.Api.AspNet3.Models;
+using Fiap.Api.AspNet3.Repository;
+using Fiap.Api.AspNet3.Repository.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +24,11 @@ builder.Services.AddControllers();
 //databaseUrl --- appSettings.JSON
 var connectionString = builder.Configuration.GetConnectionString("databaseUrl");
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString).EnableSensitiveDataLogging(true));
+
+
+//Serviços
+
+builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
 #endregion
 
 #region Autenticação
@@ -50,6 +58,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
+
 #endregion
 
 builder.Services.AddEndpointsApiExplorer();
