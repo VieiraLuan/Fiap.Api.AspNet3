@@ -1,5 +1,9 @@
 O que são Fluent API e como utilizar?
 O que significa o Rest na pratica?
+O que são serviços, microserviços API?
+Quais são os serviços mais utilizados?
+Metodos DtContext?
+Exemplo implementando serviços
 
-Erro injeção do Client
-Porque não tem o ListAsync
+site legal
+https://http.cat/

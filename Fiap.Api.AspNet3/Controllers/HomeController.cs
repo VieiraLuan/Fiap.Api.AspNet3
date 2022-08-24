@@ -1,4 +1,5 @@
 ﻿using Fiap.Api.AspNet3.Client;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace Fiap.Api.AspNet3.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class HomeController : ControllerBase
     {
 
@@ -21,6 +23,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Pleno,Senior")]
         public void Post()
         {
           
@@ -28,6 +31,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "Pleno,Senior")]
         public void  Put()
         {
            
@@ -35,6 +39,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpDelete]
+        [Authorize(Roles = "Pleno,Senior")]
         public bool Delete()
         {
           return true;

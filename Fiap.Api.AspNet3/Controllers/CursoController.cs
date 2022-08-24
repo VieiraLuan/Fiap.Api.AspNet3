@@ -1,5 +1,6 @@
 ﻿using Fiap.Api.AspNet3.Client;
 using Fiap.Api.AspNet3.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +10,13 @@ namespace Fiap.Api.AspNet3.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CursoController : ControllerBase
     {
         private readonly CursoClient _cursoClient;
-        public CursoController(CursoClient cursoClient)
+        public CursoController()
         {
-            _cursoClient = cursoClient;
+            _cursoClient = new CursoClient();
         }
 
         [HttpGet]
@@ -68,6 +70,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles ="Pleno,Senior")]
         public async Task<IActionResult> Post([FromBody] CursoModel cursoModel)
         {
 
@@ -91,6 +94,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Pleno,Senior")]
         public async Task<IActionResult> Put([FromRoute] int id, [FromBody] CursoModel cursoModel)
         {
 
@@ -129,6 +133,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
   
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Pleno,Senior")]
         public async Task<IActionResult> Delete([FromRoute] int id, [FromBody] MarcaModel marcaModel)
         {
             if (id == null)

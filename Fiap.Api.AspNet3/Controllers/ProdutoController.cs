@@ -1,4 +1,5 @@
 ﻿using Fiap.Api.AspNet3.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ namespace Fiap.Api.AspNet3.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProdutoController : ControllerBase
     {
 
@@ -61,6 +63,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Pleno,Senior")]
         public async Task<ActionResult<ProdutoModel>> Post([FromBody] ProdutoModel produtoModel)
         {
             if (produtoModel == null || !ModelState.IsValid)
@@ -79,6 +82,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Pleno,Senior")]
         public async Task<ActionResult<ProdutoModel>> Put([FromRoute] int id, [FromBody] ProdutoModel produtoModel)
         {
             if (id != produtoModel.ProdutoId || (id == 0) || produtoModel == null || !ModelState.IsValid)
@@ -103,6 +107,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Pleno,Senior")]
         public async Task<ActionResult<ProdutoModel>> Delete([FromRoute] int id)
         {
             var produto = await _dataContext.Produtos.FindAsync(id);

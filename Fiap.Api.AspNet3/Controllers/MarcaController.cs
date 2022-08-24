@@ -1,4 +1,5 @@
 ﻿using Fiap.Api.AspNet3.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ namespace Fiap.Api.AspNet3.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MarcaController : ControllerBase
     {
 
@@ -58,6 +60,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Pleno,Senior")]
         public async Task<ActionResult<MarcaModel>> Post([FromBody] MarcaModel marcaModel)
         {
             if ( marcaModel == null || !ModelState.IsValid)
@@ -76,6 +79,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Pleno,Senior")]
         public async Task<ActionResult<MarcaModel>> Put([FromRoute] int id, [FromBody] MarcaModel marcaModel)
         {
             if (id != marcaModel.MarcaId || (id == 0) || marcaModel == null || !ModelState.IsValid)
@@ -100,6 +104,7 @@ namespace Fiap.Api.AspNet3.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Pleno,Senior")]
         public async Task<ActionResult<MarcaModel>> Delete([FromRoute] int id)
         {
             var marca = await _dataContext.Marcas.FindAsync(id);
