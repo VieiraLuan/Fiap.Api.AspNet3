@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fiap.Api.AspNet3.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [Authorize]
     public class MarcaController : ControllerBase
@@ -21,8 +23,8 @@ namespace Fiap.Api.AspNet3.Controllers
             _dataContext = dataContext;
             _marcaRepository = marcaRepository;
         }
-
-        /* [HttpGet]
+        [ApiVersion("1.0", Deprecated = true)]
+        [HttpGet]
          public async Task<ActionResult<IList<MarcaModel>>> Get()
          {
              var listaMarcas = await _dataContext.Marcas.ToListAsync<MarcaModel>();
@@ -36,8 +38,9 @@ namespace Fiap.Api.AspNet3.Controllers
                  return NoContent(); // Vazio, mas deu sucesso!
              }
 
-         }*/
-
+         }
+        [ApiVersion("2.0")]
+        [ApiVersion("3.0")]
         [HttpGet]
         public async Task<ActionResult<IList<dynamic>>> Get(
             [FromQuery] int pagina = 0,
